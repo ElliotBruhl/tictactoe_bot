@@ -58,25 +58,50 @@ def run_game():
         print_board(current_pos)
         move()
         gamestate = win_check(current_pos)
-        print(get_open_moves(current_pos))
     print_board(current_pos)
     if gamestate == 1: print("X's win!")
     elif gamestate == -1: print("O's win!")
     else: print("Its a draw!")
 
-def generate_tree(board): #generates a tree with recursively nested lists. ex [root, [child1, [grandchild11, gandchild12], child2,[grandchild21]]] --- only 1 deep for now
-    tree = [board]
-    children = []
-    for i in get_open_moves(board):
-        temp = board.copy()
-        temp[i] = "X" if len(get_open_moves(board)) % 2 == 1 else "O"
-        result = win_check(temp)
-        if result is not False:
-            temp = result
-        children.append(temp)
-    tree.append(children)
-    return tree
+def computer_move(board):
+    tree = Node(board)
+    return find_best(tree)
 
-print(generate_tree(["X","O","X","O","X","O"," "," "," "]))
+def find_best(node):
+    if node.value() == 0: return 0
+    elif node.value() == 1: return 1
+    elif node.value() == -1: return -1
 
-#run_game()
+    if len(get_open_moves(node.value()))%2 == 1: #X's turn, get max
+        best_move_X = -2
+        for i in node.children():
+            test_move = find_best(i)
+            best_move_X = max(best_move_X, test_move)
+        return best_move_X
+    else: #O's turn get min
+        best_move_O = 2
+        for i in node.children():
+            test_move = find_best(i)
+            best_move_O = min(best_move_O, test_move)
+        return best_move_O
+
+class Node():
+    def __init__(self, value):
+        self.value = value
+        children = make_children(value)
+
+        def make_children(value):
+            new_children = []
+            for i in get_open_moves(value):
+                temp = value.copy()
+                temp[i] = "X" if len(get_open_moves(value)) % 2 == 1 else "O"
+                result = win_check(temp)
+                if result is not False:
+                    temp = result
+                    new_children.append(temp)
+                else:
+                    new_children.append(temp)
+                    node = Node(temp)
+            return new_children  
+
+run_game()
