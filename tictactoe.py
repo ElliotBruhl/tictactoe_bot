@@ -64,7 +64,7 @@ def run_game():
     elif gamestate == -1: print("O's win!")
     else: print("Its a draw!")
 
-def generate_tree(board): #generates a tree with recursively nested lists. ex [root, [child1, [grandchild1,[g-grandchild1, g-grandchild2], gandchild2], child2,[grandchild2]]]
+def generate_tree(board): #generates a tree with recursively nested lists. ex [root, [child1, [grandchild11, gandchild12], child2,[grandchild21]]] --- only 1 deep for now
     tree = [board]
     children = []
     for i in get_open_moves(board):
@@ -77,11 +77,6 @@ def generate_tree(board): #generates a tree with recursively nested lists. ex [r
     tree.append(children)
     return tree
 
-def get_deep():
-    pass
-
-
-
-print(generate_tree(["X"," ","X","O","X","O","X"," ","O"]))
+print(generate_tree(["X","O","X","O","X","O"," "," "," "]))
 
 #run_game()
